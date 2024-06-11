@@ -7,9 +7,16 @@ from sqlalchemy import create_engine
 from sqlalchemy import inspect
 
 #%%
+
+from data_extraction import DataExtractor
+from data_cleaning import DataCleaning
+from data_utils import DatabaseConnector
+
+
 def upload_dim_users():
     extracting = DataExtractor()    # Create DataExtractor instance
     db_connector= DatabaseConnector() # Create instance of DatabaseConnector
+    db = DatabaseConnector()
     cleaning = DataCleaning()      # Create instance of DataCleaning
     
     # Connect to remote db and create dataframe
@@ -18,8 +25,8 @@ def upload_dim_users():
     df2 = cleaning.clean_user_data(df2) # Clean dataframe
     
     # Upload the cleaned dataframe to the local db
-    read_cred_local = db_connector.read_db_creds("local-db-creds.yaml")
-    db_connector.upload_to_db(df2, 'dim_users', read_cred_local) # Upload dataframe to local DB
+    read_cred_local = db.read_db_creds("local-db-creds.yaml")
+    db.upload_to_db(df2, 'dim_users', read_cred_local) # Upload dataframe to local DB
 
 # Call the function to execute the process
 upload_dim_users()
